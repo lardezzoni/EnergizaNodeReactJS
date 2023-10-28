@@ -11,7 +11,8 @@ import About from "./pages/about";
 import Events from "./pages/events";
 import Teams from "./pages/team";
 import SignUp from "./pages/signup";
- 
+import Footer from "./components/Footer.js";
+
 function App() {
     return (
         <Router>
@@ -29,7 +30,9 @@ function App() {
                     element={<SignUp />}
                 />
             </Routes>
+            <Footer />
         </Router>
+
     );
 }
  
