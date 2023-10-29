@@ -35,7 +35,14 @@ const createSendToken = (user, statusCode, res) => {
     }
   });
 };
-
+exports.validateCorrect = catchAsync(async(req,res)=>{
+  res.status(200).json({
+    status: 'success',
+    data:
+      {validated: "success"}
+    }
+  );
+})
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -43,7 +50,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm
   });
-
+  console.log(req);
   createSendToken(newUser, 201, res);
 });
 
@@ -74,7 +81,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-
+  console.log(token)
   if (!token) {
     return next(
       new AppError('You are not logged in! Please log in to get access.', 401)
@@ -101,7 +108,7 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError('User recently changed password! Please log in again.', 401)
     );
   }
-
+console.log("WE ARE HERE")
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
   next();

@@ -15,7 +15,7 @@ const About = () => {
         >
             
             <h1>
-                Demo Energiza TEST
+                Demo Energizou 
             </h1>
 
             <h2>

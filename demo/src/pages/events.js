@@ -1,18 +1,14 @@
-import React from "react";
- 
+import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from 'axios';
+
 const Events = () => {
-    return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "centre",
-                alignItems: "centre",
-                height: "100vh",
-            }}
-        >
-            <h1>Demo</h1>
-        </div>
-    );
+ 
+ 
+  return (
+    <h1>Loading...</h1>
+
+  );
 };
  
 export default Events;

@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Navigate } from "react-router-dom"
-class SignUp extends Component {
+class Login extends Component {
     constructor(props) {
         super(props);
     
         this.state = {
-          name: '',
           password: '',
-          passwordConfirm: '',
           email: '',
-          isSignedUp: false,
+          isLoggedIn: false,
         };
       }
-
+      
+      
       handleInputChange = e => {
         this.setState({
           [e.target.name]: e.target.value,
@@ -22,31 +21,29 @@ class SignUp extends Component {
     
       handleSubmit = e => {
         e.preventDefault();
+
+        const { password, email } = this.state;
     
-        const { name, password, passwordConfirm, email } = this.state;
-    
-        const signupForm = {
-          name,
+        const loginForm = {
           password,
-          passwordConfirm,
           email,
         };
-    
         axios
-          .post('http://localhost:3005/api/v1/users/signup', signupForm)
-          .then(res => {
-            console.log(res.status)
-            if(res.status == 201){
-            this.setState({ isSignedUp: true})
+          .post('http://localhost:3005/api/v1/users/login', loginForm)
+          .then(res=> {
+            if(res.status === 200){
+              if (res.data.token) {
+                  localStorage.setItem('token', res.data.token);
+              }
+            this.setState({ isLoggedIn: true})
           }})
           .catch(err => {
             console.error(err);
           });
       };
     render() {
-        if (this.state.isSignedUp) {
-            // redirect to home if signed up
-            return <Navigate to = {{ pathname: "/login" }} />;
+        if (this.state.isLoggedIn) {
+            return <Navigate to = {{ pathname: "/events" }} />;
           }
         return (
             <div style={{
@@ -57,14 +54,14 @@ class SignUp extends Component {
             }}       >
               <br />
               <div className="container">
-                <h1> SIGN UP</h1>
+                <h1> Login</h1>
                 <form onSubmit={this.handleSubmit}>
-                  <div style={{ width: '30%' }} className="form-group">
+                <div style={{ width: '30%' }} className="form-group">
                     <input
                       type="text"
                       className="form-control"
-                      name="name"
-                      placeholder="Name"
+                      name="email"
+                      placeholder="Email"
                       onChange={this.handleInputChange}
                     />
                   </div>
@@ -78,36 +75,19 @@ class SignUp extends Component {
                       onChange={this.handleInputChange}
                     />
                   </div>
-                  <div style={{ width: '30%' }} className="form-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="passwordConfirm"
-                      placeholder="Password Confirm"
-                      onChange={this.handleInputChange}
-                    />
-                  </div>
+
                   <br />
-                  <div style={{ width: '30%' }} className="form-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="email"
-                      placeholder="Email"
-                      onChange={this.handleInputChange}
-                    />
-                  </div>
-                  <br />
+
+
                   <div style={{ width: '30%' }}>
                     <button className="btn btn-success" type="submit">
-                      Create
+                      Login
                     </button>
                   </div>
                 </form>
-                
               </div>
             </div>
           );
 };
 }
-export default SignUp;
+export default Login;
