@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "NodeBootcamp",
+			"path": "../../../../NodeBootcamp"
+		},
+		{
+			"name": "NodeWebApp",
+			"path": "../../../../NodeWebApp"
+		},
+		{
+			"name": "EnergizaNodeReactJS",
+			"path": "../../.."
+		}
+	],
+	"settings": {}
+}

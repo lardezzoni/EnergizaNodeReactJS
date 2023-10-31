@@ -1,15 +1,16 @@
 import { Navigate, Outlet } from "react-router-dom";
+import React, { Component, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 const ProtectedRoute = () => {
+  const isValid = useRef(false);
+  
+  
+  useEffect(()=>{
     let validToken = localStorage.getItem('token');
-    let valid = false;
+      
     const validJson = {
       token: validToken
     };
-    this.state = {
-      isValid: false,
-    };
-    console.log("HERE22222")
     axios.defaults.headers.common["Authorization"] = "Bearer " + validToken;
     axios
     .post('http://localhost:3005/api/v1/users/validateToken', validJson)
@@ -17,29 +18,29 @@ const ProtectedRoute = () => {
       console.log(res)
       
         if(res.status == 200){
-          console.log("VALI TOKD ")
-          this.setState({ isValid: true})
-
+              isValid.current = true;
+              console.log(isValid.current);
         }
         else{
-          this.setState({ isValid: true})
+            isValid.current = false;
         }
     })
     .catch(err => {
       console.error(err);
-    });
-    console.log(valid)
-      if (!this.state.isValid) {
-        console.log("ERROR TOKD ")
-
-        return <Navigate to = {{ pathname: "/login" }} />
-      }
-      return (
-
-            <Outlet />
-
-      );
-    };
+    })
+  }, [])
   
+  if (isValid.current) {
+    return <Navigate to = {{ pathname: "/events" }} />;
+    console.log("THIS SHOULDNT BE HERE222222222")
+
+  }
+  return (
+
+    <Outlet />
+
+);
+}
+
 export default ProtectedRoute;
   
