@@ -27,6 +27,7 @@ const empresaSchema = new mongoose.Schema(
     CNPJ: {
       type: Number,
       required: [true, 'A empresa precisa de um CNPJ'],
+      unique: true,
     },
     CEP: {
       type: Number,
