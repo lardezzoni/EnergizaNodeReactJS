@@ -8,6 +8,13 @@ class AppError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
   }
+  response(res){
+    res.status(this.statusCode).json({
+      status: 'fail',
+      data:
+      {message: this.message}
+  })
+  }
 }
 
 module.exports = AppError;
