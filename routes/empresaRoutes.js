@@ -3,13 +3,6 @@ const empresaController = require('../controllers/empresaController');
 const authController = require('../controllers/authController');
 
 const router = express.Router();
-console.log("EM EMPRESA")
-
-// POST /tour/234fad4/reviews
-// GET /tour/234fad4/reviews
-
-
-
 
 
 router

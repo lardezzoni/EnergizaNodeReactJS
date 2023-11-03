@@ -1,10 +1,8 @@
 const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
-const sendEmail = require('./../utils/email');
 const sql = require("../mysqlHandler")
 const bcrypt = require('bcryptjs');
 
@@ -141,7 +139,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // verifique se o token é real
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  // 3) Check if user still exists
+  // verifique se o usuario ainda existe
   let query = `SELECT id FROM users WHERE id=${decoded.id}`
   const resultQ = await sql.executeQuery(query);
 

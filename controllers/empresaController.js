@@ -1,6 +1,4 @@
-const Empresa = require('../models/empresaModel');
 const catchAsync = require('../utils/catchAsync');
-const factory = require('./handlerFactory');
 const AppError = require('../utils/appError');
 const mysql = require('mysql2')
 const sql = require("../mysqlHandler")
