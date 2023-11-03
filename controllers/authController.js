@@ -7,15 +7,16 @@ const sql = require("../mysqlHandler")
 const bcrypt = require('bcryptjs');
 
 
+//Cria um token baseado na senha JWT_SECRET e com expiração JWT_EXPIRES_IN
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
 };
 
+//Cria um token usando signToken, e envia uma resposta HTTP com o token para o React
 const createSendToken = (id, statusCode, res) => {
   const token = signToken(id);
-  console.log("INSIDE TOKEN1")
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -32,6 +33,7 @@ const createSendToken = (id, statusCode, res) => {
     
   });
 };
+//Valida se o token está correto e envia uma resposta positiva caso sim
 exports.validateCorrect = catchAsync(async(req,res)=>{
   let token;
   if (
@@ -66,6 +68,9 @@ exports.validateCorrect = catchAsync(async(req,res)=>{
     }
   );
 })
+
+//Verifica se as senhas estão corretas, faz uma query modificando a table users e então
+//envia um token para o usuário
 exports.signup = catchAsync(async (req, res, next) => {
   if(req.body.password == req.body.passwordConfirm){
     const password = await bcrypt.hash(req.body.password, 12);
@@ -90,6 +95,8 @@ exports.signup = catchAsync(async (req, res, next) => {
  
 });
 
+//verifica se a senha está correta decriptando ela e então caso esteje
+//correto, envia um token para o React
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   // 1) Check if email and password exist
@@ -121,6 +128,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 });
 
+//protege as routes que são seguras analizando o token que vem do React
 exports.protect = catchAsync(async (req, res, next) => {
   //veja se o token é legitimo
   let token;
