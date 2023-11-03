@@ -35,6 +35,32 @@ const createSendToken = (id, statusCode, res) => {
   });
 };
 exports.validateCorrect = catchAsync(async(req,res)=>{
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+  if (!token) {
+    let newError = new AppError("Você não está logado, por favor logue para ter acesso.", 400);
+    return newError.response(res);
+   
+  }
+
+  // verifique se o token é real
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // 3) Check if user still exists
+  let query = `SELECT id FROM users WHERE id=${decoded.id}`
+  const resultQ = await sql.executeQuery(query);
+
+  if (resultQ.length == 0) {
+    let newError = new AppError("Usuário não existe mais.", 400);
+    return newError.response(res);
+  }
+
+  
   res.status(200).json({
     status: 'success',
     data:
@@ -76,7 +102,6 @@ exports.login = catchAsync(async (req, res, next) => {
   //see if email exists
   let query = `SELECT * FROM users WHERE email='${email}'`;
   let resultQuery = await sql.executeQuery(query);
-  console.log(resultQuery);
   if(resultQuery.length==0){
     let newError = new AppError("Não foi encontrado o email", 400);
     return newError.response(res);
@@ -87,8 +112,9 @@ exports.login = catchAsync(async (req, res, next) => {
   //get id from database
   let queryId = `SELECT id FROM users WHERE email='${email}'`;
   resultQuery = await sql.executeQuery(queryId);
-
+ 
   if(tryCrypt){
+
     createSendToken(resultQuery[0].id, 200, res);
   }
   else{
@@ -106,7 +132,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  console.log(token)
   if (!token) {
     let newError = new AppError("Você não está logado, por favor logue para ter acesso.", 400);
     return newError.response(res);

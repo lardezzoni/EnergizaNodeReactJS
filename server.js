@@ -48,7 +48,7 @@ try{
   var sql = "CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) UNIQUE, password VARCHAR(255) NOT NULL)";
   const createTable = mysqlPool.executeQuery(sql);
        
-  var empresas = "CREATE TABLE empresas (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), senha VARCHAR(30), empresa VARCHAR(100), CNPJ INT(12) UNIQUE, CEP INT(8), endereco VARCHAR(5), numero INT(3), telefone INT(9), email VARCHAR(255))"
+  var empresas = "CREATE TABLE empresas (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), senha VARCHAR(30), empresa VARCHAR(100), CNPJ VARCHAR(18) UNIQUE, CEP VARCHAR(9), endereco VARCHAR(5), numero VARCHAR(3), telefone VARCHAR(10), email VARCHAR(255))"
   const createTable2 = mysqlPool.executeQuery(empresas);
 
   }

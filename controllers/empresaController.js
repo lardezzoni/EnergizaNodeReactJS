@@ -9,30 +9,28 @@ exports.getAllEmpresas = catchAsync(async(req,res,next)=>{
   const query = "SELECT * FROM empresas;"
 
   var response = await sql.executeQuery(query);
-  console.log(response);
   res.status(200).json({
     status: 'success',
-    data: {
-      response
-    }
+    response
   });
 })
 
 
 exports.getEmpresa = catchAsync(async(req,res,next)=>{
-  const empresa = await Empresa.findOne({CNPJ: req.params.CNPJ})
-  if(!empresa){
+  
+ 
+  let query = `SELECT * FROM empresas WHERE CNPJ='${req.body.CNPJ};'`
+ 
+  var response = await sql.executeQuery(query);
+  if(!response){
     res.status(304).json({
       status: 'fail',
       error: "Empresa não encontrada"
     })
   }
-  console.log(empresa);
   res.status(200).json({
     status: 'success',
-    data: {
-      empresa
-    }
+    response
   });
 })
 
@@ -77,13 +75,11 @@ exports.createEmpresa = catchAsync(async (req,res,next)=>{
     }
   }
   
-  let query = `INSERT INTO empresas(nome,senha,empresa,CNPJ,CEP,endereco,numero,telefone,email) VALUES ('${req.body.nome}', '${req.body.senha}', '${req.body.empresa}', ${req.body.CNPJ}, ${req.body.CEP}, '${req.body.endereço}', ${req.body.numero}, ${req.body.telefone}, '${req.body.email}');`
-  console.log(query);
+  let query = `INSERT INTO empresas(nome,senha,empresa,CNPJ,CEP,endereco,numero,telefone,email) VALUES ('${req.body.nome}', '${req.body.senha}', '${req.body.empresa}', '${req.body.CNPJ}', '${req.body.CEP}', '${req.body.endereço}', '${req.body.numero}', '${req.body.telefone}', '${req.body.email}');`
   try{
     const responseQ = await sql.executeQuery(query);
-    console.log(responseQ);
   }catch(err){
-    console.log("INSIDE ERROR");
+
     let newError = new AppError("Erro adicionando empresa na database", 400);
     return newError.response(res);
 
@@ -97,48 +93,72 @@ exports.createEmpresa = catchAsync(async (req,res,next)=>{
 })
 exports.updateEmpresa = catchAsync(async(req,res,next)=>{
 
-  
-  const empresa = await Empresa.findOne({CNPJ: req.params.CNPJ})
-  console.log("HERE")
+  console.log(req.body);
+  let columns = Object.keys(req.body.data);
+  let values = Object.values(req.body.data);
+  let fixArrayValues = [];
+  let fixArrayColumn = [];
+  // retirar os valores vazios do JSON
+  for (let i = 0; i < values.length; i++) {
+    if(values[i]!=''){
+      if(columns[i]=="CNPJ"){
 
-  if(!empresa){
-    res.status(304).json({
-      status: 'fail',
-      error: "Empresa não encontrada"
-    })
-  }
-  console.log("HERE")
-  console.log(req.body)
-  const doc = await Empresa.updateOne({CNPJ: req.params.CNPJ}, req.body, (err,obj)=>{
-    if(err){
-      return new AppError("Empresa não encontrata", 404)
+      }
+      else{
+        console.log(values[i])
+        let str = values[i];
+        fixArrayValues.push(str);
+        let str2 = columns[i];
+        fixArrayColumn.push(str2);
+      }
+      
     }
-  })
-  res.status(200).json({
-    status: 'success'
-  })
-})
-exports.deleteEmpresa = catchAsync(async(req,res,next)=>{
-  const empresa = await Empresa.findOne({CNPJ: req.params.CNPJ})
+    else{}
+  } 
 
-  if(!empresa){
-    res.status(304).json({
-      status: 'fail',
-      error: "Empresa não encontrada"
-    })
+  let query = "UPDATE empresas SET ";
+  
+  for (let i = 0; i < fixArrayValues.length; i++) {
+      query += fixArrayColumn[i];
+      query += "=";
+      query += "'";
+      query += fixArrayValues[i];
+      query += "'";
+      if (i !== fixArrayValues.length - 1) {
+          query += ",";
+      }
+  }
+  
+  query+= ` WHERE CNPJ='${req.body.data.CNPJ}';`;
+  //console.log(query);
+
+  let response = await sql.executeQuery(query);
+  if(response.affectedRows==0){
+    let newError = new AppError("Empresa não encontrada", 400);
+    return newError.response(res);
   }
   else{
-    const doc = await Empresa.deleteOne({CNPJ: req.params.CNPJ}, function(err, obj){
-      if(err){
-        console.log("ISIDE DELETE")
-        return new AppError("Empresa não encontrada", 404)
-  
-      }
-    })
     res.status(200).json({
       status: 'success'
     })
   }
-  
 })
+exports.deleteEmpresa = catchAsync(async(req,res,next)=>{
+
+  let query = `DELETE FROM empresas WHERE CNPJ='${req.body.CNPJ}'`
+  let response = await sql.executeQuery(query)
+
+  if(response.affectedRows==0){
+    let newError = new AppError("Empresa não encontrada", 400);
+    return newError.response(res);
+  }
+  else{
+    res.status(200).json({
+      status: 'success'
+    })
+  }
+
+  }
+  
+)
  

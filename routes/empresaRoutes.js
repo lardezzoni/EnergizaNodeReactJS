@@ -21,14 +21,16 @@ router
   );
 
 router
-  .route('/:CNPJ')
-  .get(empresaController.getEmpresa)
+  .route('/CNPJ')
+  .post(empresaController.getEmpresa)
   .patch(
     authController.protect,
+
     empresaController.updateEmpresa
   )
   .delete(
     authController.protect,
+
     empresaController.deleteEmpresa
   );
 
