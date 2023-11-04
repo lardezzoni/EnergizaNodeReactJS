@@ -15,4 +15,8 @@ Use o commando ```npm install``` para instalar o NodeJS.
 
 Use o commando ```npm install --legacy-peer-deps``` para instalar o ReactJS server.
 
+## Criando um usuário
+
+Após usar ```npm start``` para começar ambos os servers ao mesmo tempo, vá para a página Sign Up e se cadastre.
+
 
