@@ -17,7 +17,7 @@ exports.getAllEmpresas = catchAsync(async(req,res,next)=>{
 exports.getEmpresa = catchAsync(async(req,res,next)=>{
   
  
-  let query = `SELECT * FROM empresas WHERE CNPJ='${req.body.CNPJ};'`
+  let query = `SELECT * FROM empresas WHERE CNPJ='${req.body.CNPJ}';`
  
   var response = await sql.executeQuery(query);
   if(!response){
